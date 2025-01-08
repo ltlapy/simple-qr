@@ -16,15 +16,21 @@
     <script src="/qrious.min.js"></script>
     <script>
         (function () {
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+            });
+
             var qr = new QRious({
                 element: document.getElementById('qr'),
                 size: 600,
-                foreground: 'grey',
-                value: 'https://github.com/neocotic/qrious',
+                foreground: params.q ? 'black' : 'grey',
+                value: params.q || 'https://github.com/neocotic/qrious',
             });
 
             var qrText = document.getElementById('qrText');
             var isComposing = false;
+
+            qrText.value = params.q || "";
 
             // Listen for composition events to handle IME input
             qrText.addEventListener('compositionstart', function () {

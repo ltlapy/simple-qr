@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lightweight QR Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main">
+        <canvas id="qr"></canvas>
+        <textarea name="qrText" id="qrText" placeholder="Text to QR..."></textarea>
+    </div>
+    <aside>
+        QR Generator with no bullshit. Powered by qrious.js
+    </aside>
+
+    <script src="/qrious.min.js"></script>
+    <script>
+        (function () {
+            var qr = new QRious({
+                element: document.getElementById('qr'),
+                size: 600,
+                foreground: 'grey',
+                value: 'https://github.com/neocotic/qrious',
+            });
+
+            var qrText = document.getElementById('qrText');
+            var isComposing = false;
+
+            // Listen for composition events to handle IME input
+            qrText.addEventListener('compositionstart', function () {
+                isComposing = true;
+            });
+
+            qrText.addEventListener('compositionend', function () {
+                isComposing = false;
+                updateQR();
+            });
+
+            // Update QR code when input changes, but not during composition
+            qrText.addEventListener('input', function () {
+                if (!isComposing) {
+                    updateQR();
+                }
+            });
+
+            function updateQR() {
+                if (qrText.value === "") {
+                    qr.foreground = 'grey';
+                } else {
+                    qr.foreground = 'black';
+                    qr.value = qrText.value;
+                }
+            }
+        })();
+
+    </script>
+</body>
+</html>
